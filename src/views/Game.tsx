@@ -16,6 +16,8 @@ export default class Game extends Vue {
   private mixer?: AnimationMixer
   private stats?: Stats
   private clock?: Clock
+  touched = false
+  clicked = false
   mainStyle = {
     position: "absolute",
   }
@@ -37,6 +39,30 @@ export default class Game extends Vue {
     this.current = this.current + 1
   }
 
+  private onTouched() {
+    this.touched = true
+  }
+  private onTouchEnded() {
+    this.touched = false
+  }
+  private onMouseDown() {
+    this.clicked = true
+  }
+  private onMouseUp() {
+    this.clicked = false
+  }
+
+  private onMouseMove() {
+    if (this.clicked || this.touched) {
+      console.log("dragging")
+      if (this.touched) {
+        console.log("touch move")
+      }
+      return
+    }
+    console.log(this.clicked, this.touched)
+  }
+
   private onClickSpin(event: Event) {
     this.current = this.current + 1
     console.log(event)
@@ -52,6 +78,12 @@ export default class Game extends Vue {
           {...{
             on: {
               click: this.onTouchCancel,
+              touchstart: this.onTouched,
+              touchmove: this.onMouseMove,
+              touchend: this.onTouchEnded,
+              mousemove: this.onMouseMove,
+              mousedown: this.onMouseDown,
+              mouseup: this.onMouseUp,
             },
           }}
         >
