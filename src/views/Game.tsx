@@ -92,7 +92,13 @@ export default class Game extends Vue {
           <input type="text" value={this.current} />
           <p> {this.current}</p>
           <button onclick={this.onClickSpin} data-role={"spin"}>
-            스핀
+            스핀 2
+          </button>
+          <button
+            data-role={"spin"}
+            {...{ on: { "click.prevent": this.onClickSpin } }}
+          >
+            스핀 1
           </button>
         </section>
       </main>
