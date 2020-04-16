@@ -1,6 +1,6 @@
 import { Component, Vue } from "vue-property-decorator"
 import * as THREE from "three"
-import { AnimationMixer, WebGLRenderer } from "three"
+import { AnimationMixer, Clock, WebGLRenderer } from "three"
 import { CreateElement, VNode } from "vue"
 import gsap from "gsap"
 import { WEBGL } from "three/examples/jsm/WebGL.js"
@@ -15,6 +15,7 @@ export default class Game extends Vue {
   renderer?: WebGLRenderer
   private mixer?: AnimationMixer
   private stats?: Stats
+  private clock?: Clock
 
   public render(h: CreateElement): VNode {
     return h("canvas", { ref: "mainCanvas" })
@@ -53,11 +54,11 @@ export default class Game extends Vue {
     })
 
     /*    gsap.to(this.camera.position, {
-          z: 10,
-          duration:2,
-          yoyo:true,
-          repeat:-1,
-      })*/
+              z: 10,
+              duration:2,
+              yoyo:true,
+              repeat:-1,
+          })*/
 
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5)
     this.scene.add(directionalLight)
@@ -88,11 +89,12 @@ export default class Game extends Vue {
       document.body.appendChild(WEBGL.getWebGLErrorMessage())
       return
     } else {
-      this.stats = new Stats() as Stats
+      this.stats = Stats()
       document.body.appendChild(this.stats.dom)
       this.$nextTick(() => {
         const light = new THREE.AmbientLight(0x404040) // soft white light
         this.scene?.add(light)
+        this.clock = new Clock()
         this.animate()
       })
     }
@@ -128,6 +130,7 @@ export default class Game extends Vue {
     )
     this.stats?.update()
 
-    this.mixer?.update(1 / 24)
+    const delta = this.clock?.getDelta() as number
+    this.mixer?.update(delta)
   }
 }
