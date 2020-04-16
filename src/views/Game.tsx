@@ -57,6 +57,8 @@ export default class Game extends Vue {
       console.log("dragging")
       if (this.touched) {
         console.log("touch move")
+        // https://w3c.github.io/touch-events/#mouse-events
+        // https://developer.mozilla.org/en-US/docs/Web/API/Touch_events/Supporting_both_TouchEvent_and_MouseEvent
       }
       return
     }
@@ -207,6 +209,6 @@ export default class Game extends Vue {
     this.stats?.update()
 
     const delta = this.clock?.getDelta() as number
-    this.mixer?.update(delta)
+    this.mixer?.update(delta * this.current)
   }
 }
