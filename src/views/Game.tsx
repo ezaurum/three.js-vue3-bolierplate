@@ -72,7 +72,7 @@ export default class Game extends Vue {
 
   public render(h: CreateElement): VNode {
     return (
-      <main style={this.mainStyle}>
+      <main style={this.mainStyle} ref={"mainWrapper"}>
         <canvas ref={"mainCanvas"}></canvas>
         <section
           ref={"ui"}
@@ -169,12 +169,13 @@ export default class Game extends Vue {
   }
 
   mounted() {
+    const mainWrapper = this.$refs.mainWrapper as HTMLElement
     if (!this.initRenderer()) {
-      document.body.appendChild(WEBGL.getWebGLErrorMessage())
+      mainWrapper.appendChild(WEBGL.getWebGLErrorMessage())
       return
     } else {
       this.stats = Stats()
-      document.body.appendChild(this.stats.dom)
+      mainWrapper.appendChild(this.stats.dom)
       this.$nextTick(() => {
         const light = new THREE.AmbientLight(0x404040) // soft white light
         this.scene?.add(light)
@@ -198,9 +199,6 @@ export default class Game extends Vue {
   }
 
   beforeDestroy() {
-    if (this.renderer) {
-      document.body.removeChild(this.renderer.domElement)
-    }
     if (this.scene) {
       this.scene.dispose()
     }
