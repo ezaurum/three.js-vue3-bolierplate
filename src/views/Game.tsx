@@ -1,9 +1,10 @@
 import { Component, Vue } from "vue-property-decorator"
 import * as THREE from "three"
-import { WebGLRenderer } from "three"
+import { AnimationMixer, WebGLRenderer } from "three"
 import { CreateElement, VNode } from "vue"
 import gsap from "gsap"
 import { WEBGL } from "three/examples/jsm/WebGL.js"
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 
 @Component
 export default class Game extends Vue {
@@ -11,6 +12,7 @@ export default class Game extends Vue {
   camera?: THREE.PerspectiveCamera
   contextType?: string
   renderer?: WebGLRenderer
+  private mixer?: AnimationMixer
 
   public render(h: CreateElement): VNode {
     return h("canvas", { ref: "mainCanvas" })
@@ -42,10 +44,41 @@ export default class Game extends Vue {
     gsap.to(cube.rotation, {
       x: 6,
       y: 6,
-      duration: 2,
+      z: 10,
+      duration: 10,
       yoyo: true,
       repeat: -1,
     })
+
+    /*    gsap.to(this.camera.position, {
+          z: 10,
+          duration:2,
+          yoyo:true,
+          repeat:-1,
+      })*/
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5)
+    this.scene.add(directionalLight)
+
+    const loader = new GLTFLoader()
+
+    loader.load(
+      "/models/CesiumMan.glb",
+      gltf => {
+        const mesh = gltf.scene
+        this.scene?.add(mesh)
+        directionalLight.target = mesh
+
+        this.mixer = new THREE.AnimationMixer(mesh)
+        const clips = gltf.animations
+        const action = this.mixer.clipAction(clips[0])
+        action.play()
+      },
+      undefined,
+      function(error) {
+        console.error(error)
+      },
+    )
   }
 
   mounted() {
@@ -54,6 +87,8 @@ export default class Game extends Vue {
       return
     } else {
       this.$nextTick(() => {
+        const light = new THREE.AmbientLight(0x404040) // soft white light
+        this.scene?.add(light)
         this.animate()
       })
     }
@@ -87,5 +122,7 @@ export default class Game extends Vue {
       this.scene as THREE.Scene,
       this.camera as THREE.PerspectiveCamera,
     )
+
+    this.mixer?.update(1 / 24)
   }
 }
