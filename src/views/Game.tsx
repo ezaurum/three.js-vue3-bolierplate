@@ -6,6 +6,7 @@ import gsap from "gsap"
 import { WEBGL } from "three/examples/jsm/WebGL.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 import Stats from "three/examples/jsm/libs/stats.module"
+import { TransformControls } from "three/examples/jsm/controls/TransformControls.js"
 
 @Component
 export default class Game extends Vue {
@@ -122,16 +123,35 @@ export default class Game extends Vue {
       1000,
     )
 
-    const geometry = new THREE.BoxGeometry()
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+    const geometry = new THREE.CylinderGeometry(5, 5, 2, 32)
     const cube = new THREE.Mesh(geometry, material)
     this.scene.add(cube)
-    this.camera.position.z = 5
+    this.camera.position.z = 20
+
+    const t = new THREE.TextureLoader().load(
+      "/img/icons/android-chrome-512x512.png",
+    )
+    t.wrapS = THREE.RepeatWrapping
+    t.wrapT = THREE.RepeatWrapping
+    t.repeat.set(1, 1)
+
+    const cube2 = new THREE.Mesh(
+      geometry,
+      new THREE.MeshBasicMaterial({
+        map: t,
+      }),
+    )
+    this.scene.add(cube2)
 
     gsap.to(cube.rotation, {
-      x: 6,
-      y: 6,
-      z: 10,
+      x: Math.PI * 2,
+      duration: 10,
+      yoyo: true,
+      repeat: -1,
+    })
+    gsap.to(cube2.rotation, {
+      y: Math.PI * 2,
       duration: 10,
       yoyo: true,
       repeat: -1,
@@ -150,16 +170,21 @@ export default class Game extends Vue {
     const loader = new GLTFLoader()
 
     loader.load(
-      "/models/CesiumMan.glb",
+      "/models/scene.gltf",
       gltf => {
         const mesh = gltf.scene
+
         this.scene?.add(mesh)
         directionalLight.target = mesh
+        mesh.scale.x = 0.05
+        mesh.scale.y = 0.05
+        mesh.scale.z = 0.05
+        mesh.position.x = 3
 
         this.mixer = new THREE.AnimationMixer(mesh)
-        const clips = gltf.animations
-        const action = this.mixer.clipAction(clips[0])
-        action.play()
+        //const clips = gltf.animations
+        //const action = this.mixer.clipAction(clips[0])
+        //action.play()
       },
       undefined,
       function(error) {
