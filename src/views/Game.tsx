@@ -5,6 +5,7 @@ import { CreateElement, VNode } from "vue"
 import gsap from "gsap"
 import { WEBGL } from "three/examples/jsm/WebGL.js"
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
+import Stats from "three/examples/jsm/libs/stats.module"
 
 @Component
 export default class Game extends Vue {
@@ -13,6 +14,7 @@ export default class Game extends Vue {
   contextType?: string
   renderer?: WebGLRenderer
   private mixer?: AnimationMixer
+  private stats?: Stats
 
   public render(h: CreateElement): VNode {
     return h("canvas", { ref: "mainCanvas" })
@@ -86,6 +88,8 @@ export default class Game extends Vue {
       document.body.appendChild(WEBGL.getWebGLErrorMessage())
       return
     } else {
+      this.stats = new Stats() as Stats
+      document.body.appendChild(this.stats.dom)
       this.$nextTick(() => {
         const light = new THREE.AmbientLight(0x404040) // soft white light
         this.scene?.add(light)
@@ -122,6 +126,7 @@ export default class Game extends Vue {
       this.scene as THREE.Scene,
       this.camera as THREE.PerspectiveCamera,
     )
+    this.stats?.update()
 
     this.mixer?.update(1 / 24)
   }
