@@ -16,9 +16,53 @@ export default class Game extends Vue {
   private mixer?: AnimationMixer
   private stats?: Stats
   private clock?: Clock
+  mainStyle = {
+    position: "absolute",
+  }
+  uiStyle = {
+    position: "absolute",
+    top: 0,
+  }
+
+  current = 0
+  private onTouchCancel(event: Event) {
+    const target = event.target as HTMLElement
+    console.log(target)
+    console.log(event.type)
+    if (target && target.dataset.role === "spin") {
+      this.addValue()
+    }
+  }
+  private addValue() {
+    this.current = this.current + 1
+  }
+
+  private onClickSpin(event: Event) {
+    this.current = this.current + 1
+    console.log(event)
+  }
 
   public render(h: CreateElement): VNode {
-    return h("canvas", { ref: "mainCanvas" })
+    return (
+      <main style={this.mainStyle}>
+        <canvas ref={"mainCanvas"}></canvas>
+        <section
+          ref={"ui"}
+          style={this.uiStyle}
+          {...{
+            on: {
+              click: this.onTouchCancel,
+            },
+          }}
+        >
+          <input type="text" value={this.current} />
+          <p> {this.current}</p>
+          <button onclick={this.onClickSpin} data-role={"spin"}>
+            스핀
+          </button>
+        </section>
+      </main>
+    )
   }
 
   created() {
