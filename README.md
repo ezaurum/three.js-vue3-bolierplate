@@ -1,34 +1,28 @@
-# Vue boilerplate
+# Vue 3 + Typescript + Vite + Vuex + Router + Tailwindcss
 
-## Project 설정
-```
-yarn install
-```
+This template should help get you started developing with Vue 3 and Typescript in Vite. Typescript/Vite 환경에서 개발가능한 Vue3
+템플릿
 
-### 개발 서버 사용, 핫리로드
-```
-yarn serve
-```
+- SCSS
+- Lint/Prettier
+- Commit hook
+- Pinia
+- Tailwindcss
+- Storybook
 
-### 운영 빌드
-```
-yarn build
-```
+# 실행
 
-### 유닛 테스트
-```
-yarn test:unit
+```bash
+yarn dev
 ```
 
-### e2e 테스트
-```
-yarn test:e2e
-```
-
-### 린트 및 파일 수정
-```
-yarn lint
+```bash
+npm run dev
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+# 문제
+## Storybook 7.0.5 에서 실행이 안 된다면
+```shell
+rm ~/.pnp.js
+```
+[참고](https://github.com/storybookjs/storybook/issues/20876)

@@ -1,20 +1,16 @@
-import Vue from "vue"
-import Vuex from "vuex"
-import i18n from "@/i18n"
+import { defineStore } from "pinia"
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  state: { session: null, locale: "ko" },
-  mutations: {
-    login(state, s) {
-      state.session = s
+export const useStore = defineStore("main", {
+  state: () => ({
+    count: 0,
+  }),
+  actions: {
+    increment(v: number) {
+      this.count += v
     },
-    locale(state, s) {
-      state.locale = s
-      i18n.locale = s
+    async incrementAsync(v: number) {
+      await new Promise((resolve) => setTimeout(resolve, 400))
+      this.increment(v)
     },
   },
-  actions: {},
-  modules: {},
 })
