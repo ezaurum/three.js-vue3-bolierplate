@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { defineComponent, h } from "vue"
+import { defineComponent } from "vue"
 
 export default defineComponent({
   setup() {
@@ -8,7 +8,7 @@ export default defineComponent({
       75,
       window.innerWidth / window.innerHeight,
       0.1,
-      1000,
+      1000
     )
     const renderer = new THREE.WebGLRenderer()
 
@@ -18,9 +18,7 @@ export default defineComponent({
     }
 
     const render = () => {
-      const domElement = renderer.domElement
-      document.body.appendChild(domElement)
-      return h()
+      return
     }
 
     const geometry = new THREE.BoxGeometry()
@@ -30,9 +28,14 @@ export default defineComponent({
     camera.position.z = 5
 
     renderer.setSize(window.innerWidth, window.innerHeight)
+
+    // mount
+    const domElement = renderer.domElement
+    document.body.appendChild(domElement)
+
+    // initiate render
     animate()
-    // on before unmount
 
     return render
-  }
+  },
 })
