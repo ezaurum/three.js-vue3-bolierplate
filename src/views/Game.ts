@@ -12,7 +12,14 @@ export default defineComponent({
     )
     const renderer = new THREE.WebGLRenderer()
 
+    const geometry = new THREE.BoxGeometry()
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+    const cube = new THREE.Mesh(geometry, material)
+
+    const clock = new THREE.Clock()
     const animate = () => {
+      const delta = clock.getElapsedTime()
+      cube.setRotationFromEuler(new THREE.Euler(delta, delta, delta))
       requestAnimationFrame(animate)
       renderer.render(scene, camera)
     }
@@ -21,9 +28,6 @@ export default defineComponent({
       return
     }
 
-    const geometry = new THREE.BoxGeometry()
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-    const cube = new THREE.Mesh(geometry, material)
     scene.add(cube)
     camera.position.z = 5
 
@@ -34,7 +38,7 @@ export default defineComponent({
     document.body.appendChild(domElement)
 
     // initiate render
-    animate()
+    window.requestAnimationFrame(() => animate())
 
     return render
   },
